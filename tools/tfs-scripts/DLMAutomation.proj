@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="build;test;sync;publish" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <sqlCIPath>$(DLMAS_HOME)\SQLCI\sqlCI.exe</sqlCIPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DLMAutomation_build_files Include="$(MSBuildProjectDirectory)\DLMAutomation-Steps\*DLMAutomation.build.properties"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <DLMAutomation_test_files Include="$(MSBuildProjectDirectory)\DLMAutomation-Steps\*DLMAutomation.test.properties"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <DLMAutomation_sync_files Include="$(MSBuildProjectDirectory)\DLMAutomation-Steps\*DLMAutomation.sync.properties"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <DLMAutomation_publish_files Include="$(MSBuildProjectDirectory)\DLMAutomation-Steps\*DLMAutomation.publish.properties"/>
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <DLMAutomation_global_file>$(MSBuildProjectDirectory)\DLMAutomation-Steps\DLMAutomation.global.properties</DLMAutomation_global_file>
+  </PropertyGroup>
+  
+  <Import Project="$(DLMAutomation_global_file)"/>
+
+  <Target Name="CheckSqlCi">
+    <Error Condition="!Exists('$(sqlCIPath)')" Text="Cannot find $(sqlCIPath). Make sure DLM Automation is installed, and you’ve restarted Windows Services that reference DLM Automation."/>
+  </Target>
+  
+  <Target Name="build" Outputs="%(DLMAutomation_build_files.Identity)" DependsOnTargets="CheckSqlCi">
+    <MSBuild Condition="'%(DLMAutomation_build_files.Identity)' != ''"
+             Projects="DLMAutomation.build.targets"
+             Properties="DLMAutomation_properties_file=%(DLMAutomation_build_files.Identity);DLMAutomation_global_file=$(DLMAutomation_global_file);sqlCIPath=$(sqlCIPath)"/>
+  </Target>
+  
+  <Target Name="test" Outputs="%(DLMAutomation_test_files.Identity)" DependsOnTargets="CheckSqlCi">
+    <MSBuild Condition="'%(DLMAutomation_test_files.Identity)' != ''"
+             Projects="DLMAutomation.test.targets"
+             Properties="DLMAutomation_properties_file=%(DLMAutomation_test_files.Identity);DLMAutomation_global_file=$(DLMAutomation_global_file);sqlCIPath=$(sqlCIPath)"/>
+  </Target>
+  
+  <Target Name="sync" Outputs="%(DLMAutomation_sync_files.Identity)" DependsOnTargets="CheckSqlCi">
+    <MSBuild Condition="'%(DLMAutomation_sync_files.Identity)' != ''"
+             Projects="DLMAutomation.sync.targets"
+             Properties="DLMAutomation_properties_file=%(DLMAutomation_sync_files.Identity);DLMAutomation_global_file=$(DLMAutomation_global_file);sqlCIPath=$(sqlCIPath)"/>
+  </Target>
+  
+  <Target Name="publish" Outputs="%(DLMAutomation_publish_files.Identity)" DependsOnTargets="CheckSqlCi">
+    <MSBuild Condition="'%(DLMAutomation_publish_files.Identity)' != ''"
+             Projects="DLMAutomation.publish.targets"
+             Properties="DLMAutomation_properties_file=%(DLMAutomation_publish_files.Identity);DLMAutomation_global_file=$(DLMAutomation_global_file);sqlCIPath=$(sqlCIPath)"/>
+  </Target>
+</Project>
