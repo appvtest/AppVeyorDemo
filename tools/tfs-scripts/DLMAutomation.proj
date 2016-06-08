@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="build;test;sync;publish" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <sqlCIPath>$(DLMAS_HOME)\SQLCI\sqlCI.exe</sqlCIPath>
+    <sqlCIPath>$(MSBuildProjectDirectory)\..\sqlCI\sqlCI.exe</sqlCIPath>
   </PropertyGroup>
 
   <ItemGroup>
